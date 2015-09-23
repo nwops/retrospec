@@ -36,6 +36,11 @@ module Retrospec
       self.class.new(file).config_data
     end
 
+    # returns the configs that are only related to the plugin name
+    def self.plugin_context(config, plugin_name)
+      config.select {|k,v| k.downcase =~ /#{plugin_name}/ }
+    end
+
     private
 
     def setup_config_dir

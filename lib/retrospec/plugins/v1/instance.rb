@@ -31,7 +31,7 @@ module Retrospec
 
       # the name of the plugin, defaults to the name of the class
       def self.plugin_name
-        self.class
+        self.class.downcase
       end
 
       # the main file type that is used to help discover what the module is
@@ -47,6 +47,10 @@ module Retrospec
       # generates the scaffolding of the plugin type
       # this is called after the pre-hook
       def generate_plugin_files
+        raise NotImplementedError
+      end
+
+      def run
         raise NotImplementedError
       end
 

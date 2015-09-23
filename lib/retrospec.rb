@@ -9,10 +9,11 @@ module Retrospec
     def initialize(supplied_module_path, opts={})
       # locates the plugin class that can be used with this module directory
       plugin_class = Retrospec::Plugins.discover_plugin(supplied_module_path)
-      config_data  = Retrospec::Config.config_data(opts[:config_map], opts)
+      config_data  = Retrospec::Config.config_data(opts[:config_map])
+      plugin_data = Retrospec::Config.plugin_context(config_data, plugin_class.send(:plugin_name))
       # create the instance of the plugin
-      plugin = plugin_class.send(:new, supplied_module_path, config_data)
-      plugin.generate_plugin_files
+      plugin = plugin_class.send(:new, supplied_module_path, plugin_data)
+      plugin.run
     end
 
   end
