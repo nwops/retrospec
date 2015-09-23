@@ -1,0 +1,3 @@
+---
+plugins::puppet::templates::url: https://github.com/nwops/retrospec-templates
+plugins::puppet::templates::ref: master
