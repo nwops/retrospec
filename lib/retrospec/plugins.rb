@@ -23,6 +23,26 @@ module Retrospec
      def self.discover_plugin(module_path)
         plugin_classes.find {|c| c.send(:valid_module_dir?, module_path) }
      end
+
+     def available_plugins
+        get_remote_data('https://raw.githubusercontent.com/nwops/retrospec/master/available_plugins.yaml')
+     end
+
+     def get_remote_data(url)
+       require "net/https"
+       require "uri"
+       uri = URI.parse(url)
+       if uri.kind_of?(URI::HTTP) or uri.kind_of?(URI::HTTPS)
+         http = Net::HTTP.new(uri.host, uri.port)
+         http.use_ssl = true
+         #http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+         request = Net::HTTP::Get.new(uri.request_uri)
+         response = http.request(request)
+         YAML.load(response.body)
+       else
+         {}
+       end
+     end
   end
 end
 
