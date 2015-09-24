@@ -5,12 +5,12 @@
 
 Gem::Specification.new do |s|
   s.name = "retrospec"
-  s.version = "0.0.0"
+  s.version = "0.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Corey Osman"]
   s.date = "2015-09-24"
-  s.description = "TODO: longer description of your gem"
+  s.description = "Retrospec is a framework that allows the automation of repetitive file creation with just about any kind of language through the use of a pluggable architecture."
   s.email = "corey@logicminds.biz"
   s.executables = ["retrospec"]
   s.extra_rdoc_files = [
@@ -40,6 +40,7 @@ Gem::Specification.new do |s|
     "lib/retrospec/plugins/v1/module_helpers.rb",
     "lib/retrospec/plugins/v1/spec_object.rb",
     "lib/retrospec/plugins/v1/template_helpers.rb",
+    "retrospec.gemspec",
     "spec/cli_spec.rb",
     "spec/config_spec.rb",
     "spec/plugin_loader_spec.rb",
@@ -47,11 +48,11 @@ Gem::Specification.new do |s|
     "spec/retrospec_spec.rb",
     "spec/spec_helper.rb"
   ]
-  s.homepage = "http://github.com/logicminds/retrospec"
+  s.homepage = "http://github.com/nwops/retrospec"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
   s.rubygems_version = "2.0.14"
-  s.summary = "TODO: one-line summary of your gem"
+  s.summary = "A devops framework for automating your development workflow"
 
   if s.respond_to? :specification_version then
     s.specification_version = 4
@@ -64,6 +65,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<jeweler>, ["~> 2.0.1"])
       s.add_development_dependency(%q<simplecov>, [">= 0"])
       s.add_development_dependency(%q<pry>, [">= 0"])
+      s.add_development_dependency(%q<fakefs>, [">= 0"])
     else
       s.add_dependency(%q<trollop>, [">= 0"])
       s.add_dependency(%q<rspec>, ["~> 3.2"])
@@ -72,6 +74,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<jeweler>, ["~> 2.0.1"])
       s.add_dependency(%q<simplecov>, [">= 0"])
       s.add_dependency(%q<pry>, [">= 0"])
+      s.add_dependency(%q<fakefs>, [">= 0"])
     end
   else
     s.add_dependency(%q<trollop>, [">= 0"])
@@ -81,6 +84,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<jeweler>, ["~> 2.0.1"])
     s.add_dependency(%q<simplecov>, [">= 0"])
     s.add_dependency(%q<pry>, [">= 0"])
+    s.add_dependency(%q<fakefs>, [">= 0"])
   end
 end
 
