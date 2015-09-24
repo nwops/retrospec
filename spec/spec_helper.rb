@@ -1,4 +1,6 @@
 require 'simplecov'
+#require 'fakefs'
+require 'fileutils'
 
 module SimpleCov::Configuration
   def clean_filters
