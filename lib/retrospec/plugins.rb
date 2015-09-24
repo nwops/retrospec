@@ -1,5 +1,6 @@
-require 'retrospec/plugin_loader'
-require 'retrospec/plugins/v1'
+require_relative 'plugin_loader'
+require_relative 'plugins/v1'
+require 'yaml'
 
 module Retrospec
   module Plugins
@@ -17,6 +18,9 @@ module Retrospec
        end
      end
 
+     def installed_plugins
+       Retrospec::PluginLoader.retrospec_gem_list
+     end
      # returns the first plugin class that supports this module directory
      # not sure what to do when we find multiple plugins
      # would need additional criteria

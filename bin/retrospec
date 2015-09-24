@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
-require 'retrospec/cli'
+require_relative '../lib/retrospec/cli'
 require 'trollop'
-require 'retrospec'
 
 opts = Trollop::options do
   version "0.1.0 (c) Corey Osman"
@@ -15,5 +14,12 @@ A framework to automate your development workflow by generating common files and
   opt :installed_plugins, "List the installed plugins", :type => :boolean, :require => false
   opt :available_plugins, "Show an online list of available plugins", :type => :boolean, :require => false
 
+end
+if opts[:installed_plugins]
+   Retrospec::Cli.list_installed_plugins
+end
+
+if opts[:available_plugins]
+   Retrospec::Cli.list_available_plugins
 end
 
