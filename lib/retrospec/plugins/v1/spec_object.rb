@@ -4,22 +4,21 @@ module Retrospec
       class SpecObject
         attr_accessor :instance
 
-        def initialize(mod_instance)
-          @instance = mod_instance
+        def initialize(data)
+          @instance = data
         end
 
         def module_path
-          instance.module_path
+          instance['module_path']
         end
 
         def module_name
-          instance.module_name
+          instance['plugin_name']
         end
 
         def get_binding
           binding
         end
-
       end
     end
   end

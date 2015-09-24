@@ -1,5 +1,5 @@
 require 'fileutils'
-
+require 'erb'
 module Retrospec
   module Plugins
     module V1
@@ -77,6 +77,23 @@ module Retrospec
 
         def retrospec_repos_dir
           File.join(default_retrospec_dir, 'repos')
+        end
+
+        # path is the full path of the file to create
+        # template is the full path to the template file
+        # spec_object is any bindable object which the templates uses for context
+        def safe_create_template_file(path, template, spec_object)
+          # check to ensure parent directory exists
+          file_dir_path = File.expand_path(File.dirname(path))
+          if ! File.exists?(file_dir_path)
+            Helpers.safe_mkdir(file_dir_path)
+          end
+          File.open(template) do |file|
+            renderer = ERB.new(file.read, 0, '-')
+            content = renderer.result spec_object.get_binding
+            dest_path = File.expand_path(path)
+            safe_create_file(dest_path, content)
+          end
         end
 
       end
