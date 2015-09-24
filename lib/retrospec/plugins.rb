@@ -1,6 +1,7 @@
 require_relative 'plugin_loader'
 require_relative 'plugins/v1'
 require 'yaml'
+require_relative 'exceptions'
 
 module Retrospec
   module Plugins
@@ -21,11 +22,14 @@ module Retrospec
      def installed_plugins
        Retrospec::PluginLoader.retrospec_gem_list
      end
+
      # returns the first plugin class that supports this module directory
      # not sure what to do when we find multiple plugins
      # would need additional criteria
-     def self.discover_plugin(module_path)
-        plugin_classes.find {|c| c.send(:valid_module_dir?, module_path) }
+     def discover_plugin(module_path)
+        plugin = plugin_classes.find {|c| c.send(:valid_module_dir?, module_path) }
+        raise NoSuitablePluginFoundException unless plugin
+        plugin
      end
 
      def available_plugins

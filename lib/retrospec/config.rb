@@ -6,23 +6,24 @@ require 'uri'
 module Retrospec
   class Config
     include Retrospec::Plugins::V1::ModuleHelpers
-    include Retrospec::Plugins::V1::
+    include Retrospec::Plugins::V1
     attr_accessor :config_file
 
     # we should be able to lookup where the user stores the config map
     # so the user doesn't have to pass this info each time
     def initialize(file=nil, opts={})
-      config_file = file
+      setup_config_file(file)
     end
 
     # create a blank yaml config file it file does not exist
-    def config_file=(file)
-      unless file.nil? or File.exists?(file)
+    def setup_config_file(file=nil)
+      if file.nil? or ! File.exists?(file)
         # config does not exist
         setup_config_dir
-        new_file = File.join(default_retrospec_dir, 'config.yaml.sample')
-        safe_create_file(new_file, ''.to_yaml)
-        file = new_file
+        dst_file = File.join(default_retrospec_dir, 'config.yaml.sample')
+        src_file = File.join(gem_dir,'config.yaml.sample')
+        safe_copy_file(src_file, dst_file)
+        file = dst_file
       end
       @config_file = file
     end
@@ -33,44 +34,22 @@ module Retrospec
     end
 
     def self.config_data(file)
-      self.class.new(file).config_data
+      new(file).config_data
     end
 
     # returns the configs that are only related to the plugin name
     def self.plugin_context(config, plugin_name)
-      config.select {|k,v| k.downcase =~ /#{plugin_name}/ }
+      context = config.select {|k,v| k.downcase =~ /#{plugin_name}/ }
+    end
+
+    def gem_dir
+      File.expand_path("../../../", __FILE__)
     end
 
     private
 
     def setup_config_dir
-      FileUtils.mkdir_p(File.expand_path(default_retrospec_dir)) unless Directory.exists?(default_retrospec_dir)
+      FileUtils.mkdir_p(File.expand_path(default_retrospec_dir)) unless File.directory?(default_retrospec_dir)
     end
-    # def get_remote_data
-    #   uri = URI.parse(my_possible_url)
-    #   if uri.kind_of?(URI::HTTP) or uri.kind_of?(URI::HTTPS)
-    #     # do your stuff
-    #   end
-    #   require "net/https"
-    #   require "uri"
-    #
-    #   uri = URI.parse("http://google.com/")
-    #
-    #   # Shortcut
-    #   response = Net::HTTP.get_response(uri)
-    #
-    #   # Will print response.body
-    #   Net::HTTP.get_print(uri)
-    #
-    #   uri = URI.parse("https://secure.com/")
-    #   http = Net::HTTP.new(uri.host, uri.port)
-    #   http.use_ssl = true
-    #   http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    #
-    #   request = Net::HTTP::Get.new(uri.request_uri)
-    #
-    #   response = http.request(request)
-    #   response.body
-    # end
   end
 end

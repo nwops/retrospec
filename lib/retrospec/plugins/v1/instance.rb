@@ -58,6 +58,24 @@ module Retrospec
       def files
 
       end
+
+      # creates any file that is contained in the templates/modules_files directory structure
+      # loops through the directory looking for erb files or other files.
+      # strips the erb extension and renders the template to the current module path
+      # filenames must named how they would appear in the normal module path.  The directory
+      # structure where the file is contained
+      def safe_create_module_files
+        templates = Find.find(File.join(template_dir,'module_files')).find_all {|f| !File.directory?(f)}.sort
+        templates.each do |template|
+          # need to remove the erb extension and rework the destination path
+          dest = template.gsub(File.join(template_dir,'module_files'), module_path).gsub('.erb', '')
+          if File.symlink?(template)
+            safe_create_symlink(template, dest)
+          else
+            safe_create_template_file(dest, template)
+          end
+        end
+      end
     end
   end
 end
