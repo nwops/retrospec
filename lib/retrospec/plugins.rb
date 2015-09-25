@@ -32,6 +32,12 @@ module Retrospec
         plugin
      end
 
+     def discover_plugin_by_name(name)
+       plugin = plugin_classes.find {|c| c.send(:plugin_name, name) }
+       raise NoSuitablePluginFoundException unless plugin
+       plugin
+     end
+
      def available_plugins
         get_remote_data('https://raw.githubusercontent.com/nwops/retrospec/master/available_plugins.yaml')
      end
