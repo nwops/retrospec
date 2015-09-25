@@ -1,5 +1,6 @@
 require 'fileutils'
 require 'erb'
+require 'find'
 module Retrospec
   module Plugins
     module V1
