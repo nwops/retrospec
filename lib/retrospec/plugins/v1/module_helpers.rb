@@ -87,7 +87,7 @@ module Retrospec
           # check to ensure parent directory exists
           file_dir_path = File.expand_path(File.dirname(path))
           if ! File.exists?(file_dir_path)
-            Helpers.safe_mkdir(file_dir_path)
+            safe_mkdir(file_dir_path)
           end
           File.open(template) do |file|
             renderer = ERB.new(file.read, 0, '-')
@@ -103,15 +103,17 @@ module Retrospec
         # filenames must named how they would appear in the normal module path.  The directory
         # structure where the file is contained
         def safe_create_module_files(template_dir, module_path, spec_object)
-          templates = Find.find(File.join(template_dir,'module_files')).find_all {|f| !File.directory?(f)}.sort
+          templates = Find.find(File.join(template_dir,'module_files')).find_all.sort
           templates.each do |template|
               dest = template.gsub(File.join(template_dir,'module_files'), module_path).gsub('.erb', '')
               if File.symlink?(template)
-                Helpers.safe_create_symlink(template, dest)
+                safe_create_symlink(template, dest)
+              elsif File.directory?(template)
+                safe_mkdir(dest)
               else
                 safe_create_template_file(dest, template, spec_object)
               end
-            end
+          end
         end
       end
     end
