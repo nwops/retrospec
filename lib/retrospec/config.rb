@@ -1,6 +1,5 @@
 require 'yaml'
 require 'retrospec/plugins/v1/module_helpers'
-require 'retrospec/plugins/v1/template_helpers'
 require 'uri'
 
 module Retrospec
