@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Corey Osman"]
-  s.date = "2015-09-24"
+  s.date = "2015-09-25"
   s.description = "Retrospec is a framework that allows the automation of repetitive file creation with just about any kind of language through the use of a pluggable architecture."
   s.email = "corey@logicminds.biz"
   s.executables = ["retrospec"]
@@ -38,8 +38,6 @@ Gem::Specification.new do |s|
     "lib/retrospec/plugins/v1.rb",
     "lib/retrospec/plugins/v1/instance.rb",
     "lib/retrospec/plugins/v1/module_helpers.rb",
-    "lib/retrospec/plugins/v1/spec_object.rb",
-    "lib/retrospec/plugins/v1/template_helpers.rb",
     "retrospec.gemspec",
     "spec/cli_spec.rb",
     "spec/config_spec.rb",
