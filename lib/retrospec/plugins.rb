@@ -10,13 +10,16 @@ module Retrospec
        Retrospec::PluginLoader.load_from_gems('v1')
      end
 
+     def excluded_classes
+       [Retrospec::Plugins::V1::ContextObject,Retrospec::Plugins::V1::Plugin]
+     end
+
      # returns an array of plugin classes by looking in the object space for all loaded classes
      # that start with Retrospec::Plugins::V1
      def plugin_classes
        unless @plugin_classes
          load_plugins
-         @plugin_classes = ObjectSpace.each_object(Class).find_all {|c| c.name =~ /Retrospec::Plugins/} - [Retrospec::Plugins::V1::Plugin]|| []
-
+         @plugin_classes = ObjectSpace.each_object(Class).find_all { |c| c.name =~ /Retrospec::Plugins/} - excluded_classes || []
        end
        @plugin_classes
      end
