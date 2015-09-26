@@ -44,8 +44,17 @@ module Retrospec
        plugin
      end
 
+     def gem_dir
+       File.expand_path("../../../", __FILE__)
+     end
+
      def available_plugins
-        get_remote_data('https://raw.githubusercontent.com/nwops/retrospec/master/available_plugins.yaml')
+        begin
+          get_remote_data('https://raw.githubusercontent.com/nwops/retrospec/master/available_plugins.yaml')
+        rescue SocketError
+          puts "Using cached list of available plugins, use internet to get latest list."
+          YAML.load_file(File.join(gem_dir, 'available_plugins.yaml'))
+        end
      end
 
      def get_remote_data(url)

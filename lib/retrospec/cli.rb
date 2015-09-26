@@ -41,17 +41,7 @@ Available subcommands:
           # what the user wants
           Trollop.educate
         end
-        # Trollop.educate
-        # Trollop::die "unknown subcommand #{cmd.inspect}"
-
       end
-      # puts "Global options: #{global_opts.inspect}"
-      # puts "Subcommand: #{cmd.inspect}"
-      # puts "Subcommand options: #{cmd_opts.inspect}"
-      # puts "Remaining arguments: #{ARGV.inspect}"
-
-
-
     end
 
     def self.list_available_plugins
