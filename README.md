@@ -101,8 +101,22 @@ no retrospec config options being read form the config file.  By default retrosp
 Please see the following [list](https://raw.githubusercontent.com/nwops/retrospec/master/available_plugins.yaml) for available plugins.
 
 
-## Plugin development
+## Plugin development and future plugin ideas
 Please see the [plugin document](plugin_development.md) for creating new retrospec plugins.
+
+Some ideas I have in my head for future plugins that should be created.
+
+* foreman plugin generator
+* foreman hammer cli plugin generator
+* smart-proxy plugin generator
+* nodejs project generator
+* chef module generator
+* ansible module generator
+* saltstack module generator  (possibly multiple types of plugins to create here)
+* groovy project generator
+* puppet module generator (in progress)
+
+The sky is really the limit for what we can create since the usage is limited to any project that contains files. 
 
 ## Contributing to retrospec
  
