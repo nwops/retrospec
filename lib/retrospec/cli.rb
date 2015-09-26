@@ -23,7 +23,6 @@ Available subcommands:
         EOS
         opt :module_path, "The path (relative or absolute) to the module directory" ,
             :type => :string, :required => false, :default => File.expand_path('.')
-        opt :installed_plugins, "List the installed plugins", :type => :boolean, :require => false, :short => '-i'
         opt :available_plugins, "Show an online list of available plugins", :type => :boolean, :require => false, :short => '-a'
         stop_on sub_commands
       end
@@ -34,9 +33,7 @@ Available subcommands:
         opts = global_opts.merge(cmd_opts)
         Retrospec::Module.new(global_opts[:module_path], plugin_class, opts)
       else
-        if global_opts[:installed_plugins]
-          Retrospec::Cli.list_installed_plugins
-        elsif global_opts[:available_plugins]
+        if global_opts[:available_plugins]
           Retrospec::Cli.list_available_plugins
         else
           # this is the default action when no command is entered
