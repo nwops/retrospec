@@ -1,4 +1,5 @@
 # Retrospec
+[![Gem Version](https://badge.fury.io/rb/retrospec.svg)](http://badge.fury.io/rb/retrospec)
 
 Retrospec is a framework that allows the automation of repetitive project file creation with just about any kind of programming
 project through the use of a pluggable architecture.
