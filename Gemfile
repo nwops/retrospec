@@ -14,4 +14,3 @@ group :development do
   gem 'pry'
   gem "fakefs", :require => "fakefs/safe"
 end
-gem 'retrospec-plugingen', :git => 'https://github.com/nwops/retrospec-plugingen.git'
