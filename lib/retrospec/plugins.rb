@@ -15,8 +15,14 @@ module Retrospec
      def plugin_classes
        unless @plugin_classes
          load_plugins
-         @plugin_classes = ObjectSpace.each_object(Class).find_all {|c| c.name =~ /Retrospec::Plugins/}
+         @plugin_classes = ObjectSpace.each_object(Class).find_all {|c| c.name =~ /Retrospec::Plugins/} - [Retrospec::Plugins::V1::Plugin]|| []
+
        end
+       @plugin_classes
+     end
+
+     def plugin_map
+       @plugin_map ||= Hash[plugin_classes.map { |gem| [gem.send(:plugin_name) , gem] }]
      end
 
      def installed_plugins

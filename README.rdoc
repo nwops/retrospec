@@ -17,3 +17,20 @@ Description goes here.
 Copyright (c) 2015 Corey Osman. See LICENSE.txt for
 further details.
 
+Also, I’ll be releasing a major overhaul to retrospec in the coming weeks that will make it possible to use retrospec with just about any language or project.  This means if you want folks to write plugins for your software
+you can build a retrospec plugin gem that automates the creation of the plugin/scaffolding code for that project.  And I have a plugin to create plugins for retrospec.  Not sure if this makes sense but its going to open the doors to easier
+plugin writing for everyone.  This means we can automate the creation of plugins for your auto sign tool.
+
+The framework is not ready but if your curious the links are below.
+
+https://github.com/nwops/retrospec (framework)
+https://github.com/nwops/retrospec-plugingen (first plugin)
+
+- puppet-retrospec will be converted to a plugin as well
+- nodejs plugin is coming
+- a plugin for creating foreman plugins is on my list
+- a plugin for creating foreman hammer cli plugins
+- chef module plugin
+- salt module plugin
+
+

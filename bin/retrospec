@@ -1,25 +1,5 @@
 #!/usr/bin/env ruby
 require_relative '../lib/retrospec/cli'
-require 'trollop'
-
-opts = Trollop::options do
-  version "0.1.0 (c) Corey Osman"
-  banner <<-EOS
-A framework to automate your development workflow by generating common files and test patterns.
 
 
-  EOS
-  opt :module_path, "The path (relative or absolute) to the module directory (Defaults to current directory) " ,
-      :type => :string, :required => false, :default => nil
-  opt :installed_plugins, "List the installed plugins", :type => :boolean, :require => false
-  opt :available_plugins, "Show an online list of available plugins", :type => :boolean, :require => false
-
-end
-if opts[:installed_plugins]
-   Retrospec::Cli.list_installed_plugins
-end
-
-if opts[:available_plugins]
-   Retrospec::Cli.list_available_plugins
-end
-
+Retrospec::Cli.run

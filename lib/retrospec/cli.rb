@@ -1,8 +1,61 @@
 require_relative 'plugins'
+require 'trollop'
+require_relative '../retrospec'
 
 module Retrospec
   class Cli
     include Retrospec::Plugins
+
+    def self.run
+      cli = Retrospec::Cli.new
+      sub_commands = cli.plugin_map.keys
+      cmd_help = sub_commands.join("\n")
+
+      global_opts = Trollop::options do
+        version "0.1.0 (c) Corey Osman"
+        banner <<-EOS
+A framework to automate your development workflow by generating common files and test patterns.
+
+Usage: retrospec [global options] subcommand [subcommand options]
+Available subcommands:
+#{cmd_help}
+
+        EOS
+        opt :module_path, "The path (relative or absolute) to the module directory" ,
+            :type => :string, :required => false, :default => File.expand_path('.')
+        opt :installed_plugins, "List the installed plugins", :type => :boolean, :require => false, :short => '-i'
+        opt :available_plugins, "Show an online list of available plugins", :type => :boolean, :require => false, :short => '-a'
+        stop_on sub_commands
+      end
+      cmd = ARGV.shift # get the subcommand
+      if plugin_class = cli.plugin_map[cmd]
+        # run the subcommand options
+        cmd_opts = cli.plugin_map[cmd].send(:cli_options, global_opts)
+        opts = global_opts.merge(cmd_opts)
+        Retrospec::Module.new(global_opts[:module_path], plugin_class, opts)
+      else
+        if global_opts[:installed_plugins]
+          Retrospec::Cli.list_installed_plugins
+        elsif global_opts[:available_plugins]
+          Retrospec::Cli.list_available_plugins
+        else
+          # this is the default action when no command is entered
+          # at a later time we will try and use some magic to guess
+          # what the user wants
+          Trollop.educate
+        end
+        # Trollop.educate
+        # Trollop::die "unknown subcommand #{cmd.inspect}"
+
+      end
+      # puts "Global options: #{global_opts.inspect}"
+      # puts "Subcommand: #{cmd.inspect}"
+      # puts "Subcommand options: #{cmd_opts.inspect}"
+      # puts "Remaining arguments: #{ARGV.inspect}"
+
+
+
+    end
 
     def self.list_available_plugins
         Retrospec::Cli.new.available_plugins.each do |name, plugin_data|

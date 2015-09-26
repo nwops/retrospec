@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Corey Osman"]
-  s.date = "2015-09-25"
+  s.date = "2015-09-26"
   s.description = "Retrospec is a framework that allows the automation of repetitive file creation with just about any kind of language through the use of a pluggable architecture."
   s.email = "corey@logicminds.biz"
   s.executables = ["retrospec"]
@@ -33,11 +33,12 @@ Gem::Specification.new do |s|
     "lib/retrospec/cli.rb",
     "lib/retrospec/config.rb",
     "lib/retrospec/exceptions.rb",
+    "lib/retrospec/module.rb",
     "lib/retrospec/plugin_loader.rb",
     "lib/retrospec/plugins.rb",
     "lib/retrospec/plugins/v1.rb",
-    "lib/retrospec/plugins/v1/instance.rb",
     "lib/retrospec/plugins/v1/module_helpers.rb",
+    "lib/retrospec/plugins/v1/plugin.rb",
     "retrospec.gemspec",
     "spec/cli_spec.rb",
     "spec/config_spec.rb",
@@ -57,6 +58,7 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<trollop>, [">= 0"])
+      s.add_runtime_dependency(%q<retrospec-plugingen>, [">= 0"])
       s.add_development_dependency(%q<rspec>, ["~> 3.2"])
       s.add_development_dependency(%q<rdoc>, ["~> 3.12"])
       s.add_development_dependency(%q<bundler>, ["~> 1.0"])
@@ -66,6 +68,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<fakefs>, [">= 0"])
     else
       s.add_dependency(%q<trollop>, [">= 0"])
+      s.add_dependency(%q<retrospec-plugingen>, [">= 0"])
       s.add_dependency(%q<rspec>, ["~> 3.2"])
       s.add_dependency(%q<rdoc>, ["~> 3.12"])
       s.add_dependency(%q<bundler>, ["~> 1.0"])
@@ -76,6 +79,7 @@ Gem::Specification.new do |s|
     end
   else
     s.add_dependency(%q<trollop>, [">= 0"])
+    s.add_dependency(%q<retrospec-plugingen>, [">= 0"])
     s.add_dependency(%q<rspec>, ["~> 3.2"])
     s.add_dependency(%q<rdoc>, ["~> 3.12"])
     s.add_dependency(%q<bundler>, ["~> 1.0"])

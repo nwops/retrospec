@@ -27,6 +27,7 @@ module Retrospec
       end
     end
 
+
     # returns a list of retrospec gem plugin specs
     def self.retrospec_gem_list
       gemspecs.reject { |spec| spec.name == 'retrospec' or ! File.directory?(File.join(spec.full_gem_path,'lib','retrospec','plugins')) }
