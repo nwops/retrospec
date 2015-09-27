@@ -1,6 +1,7 @@
 require_relative 'plugins'
 require 'trollop'
 require_relative '../retrospec'
+require_relative 'config'
 
 module Retrospec
   class Cli
@@ -23,13 +24,15 @@ Available subcommands:
         EOS
         opt :module_path, "The path (relative or absolute) to the module directory" ,
             :type => :string, :required => false, :default => File.expand_path('.')
+        opt :config_map, "The global retrospec config file", :type => :string, :required => false, :default => File.expand_path(File.join(ENV['HOME'], '.retrospec', 'config.yaml' ))
         opt :available_plugins, "Show an online list of available plugins", :type => :boolean, :require => false, :short => '-a'
         stop_on sub_commands
       end
       cmd = ARGV.shift # get the subcommand
       if plugin_class = cli.plugin_map[cmd]
-        # run the subcommand options
-        cmd_opts = cli.plugin_map[cmd].send(:cli_options, global_opts)
+        # run the subcommand options but first send the config file and global options to the subcomamnd
+        plugin_config = Retrospec::Config.plugin_context(Retrospec::Config.config_data(global_opts[:config_map]), cmd)
+        cmd_opts = cli.plugin_map[cmd].send(:cli_options, global_opts.merge(plugin_config))
         opts = global_opts.merge(cmd_opts)
         Retrospec::Module.new(global_opts[:module_path], plugin_class, opts)
       else

@@ -10,7 +10,7 @@ module Retrospec
 
     # we should be able to lookup where the user stores the config map
     # so the user doesn't have to pass this info each time
-    def initialize(file=nil, opts={})
+    def initialize(file=default_config_file, opts={})
       setup_config_file(file)
     end
 
@@ -19,7 +19,7 @@ module Retrospec
       if file.nil? or ! File.exists?(file)
         # config does not exist
         setup_config_dir
-        dst_file = File.join(default_retrospec_dir, 'config.yaml.sample')
+        dst_file = File.join(default_retrospec_dir, 'config.yaml')
         src_file = File.join(gem_dir,'config.yaml.sample')
         safe_copy_file(src_file, dst_file)
         file = dst_file
@@ -29,7 +29,7 @@ module Retrospec
 
     # loads the config data into a ruby object
     def config_data
-      @config_data ||= YAML.load_file(config_file)
+      @config_data ||= YAML.load_file(config_file) || {}
     end
 
     def self.config_data(file)
@@ -46,6 +46,10 @@ module Retrospec
     end
 
     private
+
+    def default_config_file
+      File.join(default_retrospec_dir, 'config.yaml')
+    end
 
     def setup_config_dir
       FileUtils.mkdir_p(File.expand_path(default_retrospec_dir)) unless File.directory?(default_retrospec_dir)

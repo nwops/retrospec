@@ -1,7 +1,7 @@
 require 'simplecov'
 #require 'fakefs'
 require 'fileutils'
-
+require 'pry'
 module SimpleCov::Configuration
   def clean_filters
     @filters = []
