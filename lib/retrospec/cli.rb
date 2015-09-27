@@ -12,7 +12,7 @@ module Retrospec
       cmd_help = sub_commands.join("\n")
 
       global_opts = Trollop::options do
-        version "0.2.1 (c) Corey Osman"
+        version "#{Retrospec::VERSION} (c) Corey Osman"
         banner <<-EOS
 A framework to automate your development workflow by generating common files and test patterns.
 
