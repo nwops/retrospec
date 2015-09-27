@@ -3,3 +3,8 @@ retrospec-plugingen:
   project_url: https://github.com/nwops/retrospec-plugingen
   gem: retrospec-plugingen
   description: Provides instant retrospec plugin creation
+puppet-retrospec:
+  project_url: https://github.com/nwops/retrospec-puppet
+  gem: puppet-retrospec
+  description: Provides puppet module development and unit test automation
+
