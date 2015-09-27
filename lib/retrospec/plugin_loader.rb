@@ -6,8 +6,7 @@ module Retrospec
     #
     # Returns nothing.
     def self.load_from_gems(version='v1')
-      retorspec_plugin_paths = gem_directories.select { |path| (path + File.join('retrospec','plugins')).directory? }
-      retorspec_plugin_paths.each do |gem_path|
+      gem_directories.each do |gem_path|
         Dir[File.join(gem_path,'*.rb')].each do |file|
           load file
         end
@@ -15,16 +14,19 @@ module Retrospec
     end
 
     # Internal: Retrieve a list of available gem paths from RubyGems.
+    # filter out the main retrospec gem, then filter out any plugin that is
+    # not a retrospec gem.
     #
     # Returns an Array of Pathname objects.
     def self.gem_directories
+      dirs = []
       if has_rubygems?
-        gemspecs.reject { |spec| spec.name == 'retrospec' }.map do |spec|
-          Pathname.new(spec.full_gem_path) + 'lib'
+       dirs = gemspecs.reject { |spec| spec.name == 'retrospec' }.map do |spec|
+          lib_path = File.expand_path(File.join(spec.full_gem_path,'lib'))
+          lib_path if File.exists? File.join(lib_path,'retrospec','plugins')
         end
-      else
-        []
       end
+      dirs.reject { |dir| dir.nil? }
     end
 
 
