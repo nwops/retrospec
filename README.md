@@ -132,3 +132,7 @@ The sky is really the limit for what we can create since the usage is limited to
 
 Copyright (c) 2015 Corey Osman. See LICENSE.txt for
 further details.
+
+## Paid Support
+Want to see new features developed much faster?  Contact me about a support contract so I can develop this tool during
+the day instead of after work.  contact: sales@logicminds.biz
