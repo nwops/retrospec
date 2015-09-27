@@ -16,6 +16,12 @@ By default the plugin generator will use the name of the directory or the name s
 will used through the generator templates so its important to pick a sensible name.  The generator also uses the plugin_name
 as a class name although you are free to change it after creation. 
 
+### Naming the gem and repo
+Please ensure the gem name uses the following naming scheme retrospec-plugin_name and that your repo is also named retrospec-plugin_name.
+This will help everyone identify what the repo and gem do more easily. 
+
+Note: puppet-retrospec does not follow this standard due to a legacy name issue that would have caused confusion.
+
 ## What you need to override
 * run
 
