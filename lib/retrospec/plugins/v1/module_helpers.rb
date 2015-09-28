@@ -7,6 +7,7 @@ module Retrospec
       module ModuleHelpers
         # only creates a directory if the directory doesn't already exist
         def safe_mkdir(dir)
+          dir = File.expand_path(dir)
           if File.exists? dir
             unless File.directory? dir
               $stderr.puts "!! #{dir} already exists and is not a directory".fatal
@@ -103,15 +104,23 @@ module Retrospec
         # filenames must named how they would appear in the normal module path.  The directory
         # structure where the file is contained
         def safe_create_module_files(template_dir, module_path, spec_object)
-          templates = Find.find(File.join(template_dir,'module_files')).find_all.sort
+          templates = Find.find(File.join(template_dir,'module_files')).sort
           templates.each do |template|
-              dest = template.gsub(File.join(template_dir,'module_files'), module_path).gsub('.erb', '')
+              dest = template.gsub(File.join(template_dir,'module_files'), module_path)
               if File.symlink?(template)
                 safe_create_symlink(template, dest)
               elsif File.directory?(template)
                 safe_mkdir(dest)
               else
-                safe_create_template_file(dest, template, spec_object)
+                # because some plugins contain erb files themselves any erb file will be copied only
+                # so we need to designate which files should be rendered with .retrospec.erb
+                if template =~ /\.retrospec\.erb/
+                  # render any file ending in .retrospec_erb as a template
+                  dest = dest.gsub(/\.retrospec\.erb/, '')
+                  safe_create_template_file(dest, template, spec_object)
+                else
+                  safe_copy_file(template, dest)
+                end
               end
           end
         end

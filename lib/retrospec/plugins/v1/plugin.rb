@@ -1,5 +1,6 @@
 require 'trollop'
 require_relative 'module_helpers'
+require_relative 'context_object'
 
 module Retrospec
   module Plugins
