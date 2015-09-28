@@ -18,6 +18,15 @@ module Retrospec
           end
         end
 
+        def safe_move_file(src,dest)
+          if File.exists?(dest)
+            $stderr.puts "!! #{dest} already exists and differs from template".warning
+          else
+            FileUtils.mv(src,dest)
+            puts " + #{dest}".info
+          end
+        end
+
         # copy the symlink and preserve the link
         def safe_create_symlink(src,dest)
           if File.exists? dest
