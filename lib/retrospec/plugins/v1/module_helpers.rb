@@ -106,22 +106,22 @@ module Retrospec
         def safe_create_module_files(template_dir, module_path, spec_object)
           templates = Find.find(File.join(template_dir,'module_files')).sort
           templates.each do |template|
-              dest = template.gsub(File.join(template_dir,'module_files'), module_path)
-              if File.symlink?(template)
-                safe_create_symlink(template, dest)
-              elsif File.directory?(template)
-                safe_mkdir(dest)
+            dest = template.gsub(File.join(template_dir,'module_files'), module_path)
+            if File.symlink?(template)
+              safe_create_symlink(template, dest)
+            elsif File.directory?(template)
+              safe_mkdir(dest)
+            else
+              # because some plugins contain erb files themselves any erb file will be copied only
+              # so we need to designate which files should be rendered with .retrospec.erb
+              if template =~ /\.retrospec\.erb/
+                # render any file ending in .retrospec_erb as a template
+                dest = dest.gsub(/\.retrospec\.erb/, '')
+                safe_create_template_file(dest, template, spec_object)
               else
-                # because some plugins contain erb files themselves any erb file will be copied only
-                # so we need to designate which files should be rendered with .retrospec.erb
-                if template =~ /\.retrospec\.erb/
-                  # render any file ending in .retrospec_erb as a template
-                  dest = dest.gsub(/\.retrospec\.erb/, '')
-                  safe_create_template_file(dest, template, spec_object)
-                else
-                  safe_copy_file(template, dest)
-                end
+                safe_copy_file(template, dest)
               end
+            end
           end
         end
       end
