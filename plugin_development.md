@@ -13,30 +13,66 @@ create a retrospec plugin. Follow the steps below to create a plugin.
 
 ## Choosing a plugin name
 By default the plugin generator will use the name of the directory or the name specified via the -n option.  This name
-will used through the generator templates so its important to pick a sensible name.  The generator also uses the plugin_name
+will be used throughout the generator templates so its important to pick a sensible name.  The generator also uses the plugin_name
 as a class name although you are free to change it after creation. 
 
 ### Naming the gem and repo
 Please ensure the gem name uses the following naming scheme retrospec-plugin_name and that your repo is also named retrospec-plugin_name.
-This will help everyone identify what the repo and gem do more easily. 
+This will help everyone identify what the repo and gem do. 
 
 Note: puppet-retrospec does not follow this standard due to a legacy name issue that would have caused confusion.
 
 ## What you need to override
-* run
+* self.run_cli
 
 ## Create a context object
 By default the plugin generator will create a context object that can be used inside templates.  The default context object
 does not contain anything useful so you will want to customize this object only if your templates require variable interpolation.
 
-## Add custom options to the cli
-You can get input from the user in the form of cli options.  These options are passed in directly to your init method.
-To customize these options please override the the following class method:
+## Main method to override
+Retrospec will call your plugin by running the plugin.run_cli class method.  You can do whatever you want in this method.
 
-```
-def self.cli_options(global_opts)
-  Trollop::options do
+The global_opts are the options passed into the retrospec command which are specific to retrospec.  Additionally, the 
+global_config  (~/.retrospec/config.yaml) is a hash map of the entire config while the plugin_config is a subset that pertains
+only to your plugin.
+
+In this method you should at least call self.new() on your plugin and then plugin_instance.run.  
+
+For simplicity sake you can also just copy and paste this into your method.  This is the default layout when using 
+the retrospec plugin generator.
+
+```ruby
+def self.run_cli(global_opts, global_config, plugin_config)
+ # a list of subcommands for this plugin
+    sub_commands  = []
+    if sub_commands.count > 0
+      sub_command_help = "Subcommands:\n#{sub_commands.join("\n")}\n"
+    else
+      sub_command_help = ""
+    end
+    plugin_opts = Trollop::options do
+      version "#{Retrospec::Pluginname::VERSION} (c) Your Name"
+      banner <<-EOS
+Some description goes here.\n
+#{sub_command_help}
+
+    EOS
     opt :option1, "Some fancy option"
+    stop_on sub_commands
+  end
+  # the passed in options will always override the config file
+  plugin_data = plugin_opts.merge(global_config).merge(global_opts).merge(plugin_opts)
+  # define the default action to use the plugin here, the default is run
+  sub_command = (ARGV.shift || :run).to_sym
+  # create an instance of this plugin
+  plugin = self.new(plugin_data[:module_path],plugin_data)
+  # check if the plugin supports the sub command
+  if plugin.respond_to?(sub_command)
+    plugin.post_init   # finish initialization
+    plugin.send(sub_command)
+  else
+    puts "The subcommand #{sub_command} is not supported or valid"
+    exit 1
   end
 end
 ```
