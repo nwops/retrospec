@@ -9,6 +9,7 @@ module Retrospec
 
     def self.run
       cli = Retrospec::Cli.new
+      # get the list of plugins and provide the plugin name as sub commands
       sub_commands = cli.plugin_map.keys
       cmd_help = sub_commands.join("\n")
 
@@ -30,11 +31,10 @@ Available subcommands:
       end
       cmd = ARGV.shift # get the subcommand
       if plugin_class = cli.plugin_map[cmd]
-        # run the subcommand options but first send the config file and global options to the subcomamnd
-        plugin_config = Retrospec::Config.plugin_context(Retrospec::Config.config_data(global_opts[:config_map]), cmd)
-        cmd_opts = cli.plugin_map[cmd].send(:cli_options, global_opts.merge(plugin_config))
-        opts = global_opts.merge(cmd_opts)
-        Retrospec::Module.new(global_opts[:module_path], plugin_class, opts)
+        # this is what generates the cli options for the subcommand
+        # this is also the main entry point that runs the plugin's cli
+        global_config = Retrospec::Config.config_data(global_opts[:config_map])
+        cli.plugin_map[cmd].send(:run_cli, global_opts, global_config)
       else
         if global_opts[:available_plugins]
           Retrospec::Cli.list_available_plugins
