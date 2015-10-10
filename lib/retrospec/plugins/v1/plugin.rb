@@ -39,9 +39,8 @@ module Retrospec
 
         # used to display subcommand options to the cli
         # the global options are passed in for your usage
-        def self.cli_options(global_opts)
-          Trollop::options do
-          end
+        def self.run_cli(global_opts, global_config, plugin_config)
+          raise NotImplemented
         end
 
         # the name of the plugin that will be sent to the cli

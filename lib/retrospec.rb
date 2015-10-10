@@ -1,4 +1,3 @@
-require_relative 'retrospec/module'
 require_relative 'version'
 # monkey patch in some color effects string methods
 class String
