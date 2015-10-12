@@ -8,4 +8,17 @@ class String
   def warning;        yellow                   end
   def fatal;          red                      end
   def info;           green                    end
+
+  def camel_case
+    return self if self !~ /_/ && self =~ /[A-Z]+.*/
+    split('_').map(&:capitalize).join
+  end
+
+  def underscore
+    self.gsub(/::/, '/').
+        gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2').
+        gsub(/([a-z\d])([A-Z])/,'\1_\2').
+        tr("-", "_").
+        downcase
+  end
 end
