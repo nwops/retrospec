@@ -1,0 +1,16 @@
+branches:
+  only:
+    - master
+    - development
+language: ruby
+script: "bundle exec rake spec SPEC_OPTS='--format documentation'"
+rvm:
+- 1.9.3 
+- 2.0
+- 2.1
+- 2.2
+- 2.3
+
+notifications:
+  email: corey@logicminds.biz
+
