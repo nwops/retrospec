@@ -5,6 +5,61 @@ module Retrospec
   module Plugins
     module V1
       module ModuleHelpers
+
+        # stores the answer if the user wants to overwrite all files
+        # @return [Boolean]  true if overwrite_all mode is enabled
+        def overwrite_all
+          @overwrite_all ||= !ENV['RETROSPEC_OVERWRITE_ALL'].nil?
+        end
+
+        # @return [Boolean]  true if overwrite mode is enabled
+        def overwrite_enabled?
+          !ENV['RETROSPEC_OVERWRITE_ENABLE'].nil?
+        end
+
+        # notifies the user of what action will be performed
+        # + creates a file
+        # - + overwrites a file
+        def notify(dest, overwrite=false)
+          if overwrite
+            puts " - + #{dest}".info
+          else
+            puts " + #{dest}".info
+          end
+        end
+
+        # creates the content, then notifies the user
+        def create_content(type, dest, src = nil, overwrite = false)
+          case type
+            when :file
+              File.open(dest, 'w') do |f|
+                f.puts(src)
+              end
+            when :dir
+              FileUtils.mkdir_p(dest)
+            when :link
+              FileUtils.copy_entry(src,dest)
+            when :mv
+              FileUtils.mv(src,dest)
+            when :touch
+              FileUtils.touch(dest)
+            when :cp
+              FileUtils.cp(src,dest)
+          end
+          notify(dest, overwrite)
+        end
+
+        # @returns [Boolean] true if the user wants to overwrite the dest
+        # sets @overwrite_all if the user chooses 'a' and saves for next time
+        def overwrite?(dest)
+          return false unless overwrite_enabled?
+          return true if overwrite_all
+          put "Overwrite #{dest}?(y/n/a): "
+          answer = gets.chomp.downcase
+          return @overwrite_all = true if answer == 'a'
+          answer == 'y'
+        end
+
         # only creates a directory if the directory doesn't already exist
         def safe_mkdir(dir)
           dir = File.expand_path(dir)
@@ -13,43 +68,34 @@ module Retrospec
               $stderr.puts "!! #{dir} already exists and is not a directory".fatal
             end
           else
-            FileUtils.mkdir_p dir
-            puts " + #{dir}/".info
+            create_content(:dir, dir)
           end
         end
 
+        # move the file, safely
         def safe_move_file(src,dest)
-          if File.exists?(dest)
-            $stderr.puts "!! #{dest} already exists and differs from template".warning
-          else
-            FileUtils.mv(src,dest)
-            puts " + #{dest}".info
+          if File.exists?(dest) && !overwrite?(dest)
+            return $stderr.puts "!! #{dest} already exists and differs from template".warning
           end
+          create_content(:mv, dest, src)
         end
 
         # copy the symlink and preserve the link
         def safe_create_symlink(src,dest)
-          if File.exists? dest
-            $stderr.puts "!! #{dest} already exists and differs from template".warning
-          else
-            FileUtils.copy_entry(src,dest)
-            puts " + #{dest}".info
+          if File.exists?(dest) && !overwrite?(dest)
+            return $stderr.puts "!! #{dest} already exists and differs from template".warning
           end
+          create_content(:link, dest, src)
         end
 
-        # safely copy and existing file to another dest
+        # safely copy an existing file to another dest
         def safe_copy_file(src, dest)
-          if File.exists?(dest) and not File.zero?(dest)
-            $stderr.puts "!! #{dest} already exists".warning
-          else
-            if not File.exists?(src)
-              safe_touch(src)
-            else
-              safe_mkdir(File.dirname(dest))
-              FileUtils.cp(src,dest)
-            end
-            puts " + #{dest}".info
+          if File.exists?(dest) and !File.zero?(dest) && !overwrite?(dest)
+            return $stderr.puts "!! #{dest} already exists".warning
           end
+          return safe_touch(src) unless File.exists?(src)
+          safe_mkdir(File.dirname(dest))
+          create_content(:cp, dest, src)
         end
 
         # touch a file, this is useful for setting up trigger files
@@ -59,25 +105,21 @@ module Retrospec
               $stderr.puts "!! #{file} already exists and is not a regular file".fatal
             end
           else
-            FileUtils.touch file
-            puts " + #{file}".info
+            create_content(:touch, file)
           end
         end
 
         # safely creates a file and does not override the existing file
-        def safe_create_file(filepath, content)
-          if File.exists? filepath
-            old_content = File.read(filepath)
+        def safe_create_file(dest, content)
+          if File.exists?(dest) && !overwrite?(dest)
+            old_content = File.read(dest)
             # if we did a better comparison of content we could be smarter about when we create files
-            if old_content != content or not File.zero?(filepath)
-              $stderr.puts "!! #{filepath} already exists and differs from template".warning
+            if old_content != content or not File.zero?(dest)
+              $stderr.puts "!! #{dest} already exists and differs from template".warning
             end
           else
-            safe_mkdir(File.dirname(filepath)) unless File.exists? File.dirname(filepath)
-            File.open(filepath, 'w') do |f|
-              f.puts content
-            end
-            puts " + #{filepath}".info
+            safe_mkdir(File.dirname(dest)) unless File.exists? File.dirname(dest)
+            create_content(:file, dest, content)
           end
         end
 

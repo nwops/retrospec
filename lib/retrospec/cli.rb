@@ -18,11 +18,15 @@ module Retrospec
         banner <<-EOS
 A framework to automate your development workflow by generating common files and test patterns.
 
-Usage: retrospec [global options] subcommand [subcommand options]
+Usage: retrospec [global options] plugin [plugin options]
 Available subcommands:
 #{cmd_help}
 
         EOS
+        opt :enable_overwrite, "Enable overwriting of files, will prompt for each file",
+            :type => :boolean, :default => false
+        opt :enable_overwrite_all, "Always overwrites files without prompting",
+            :type => :boolean, :default => false
         opt :module_path, "The path (relative or absolute) to the module directory" ,
             :type => :string, :required => false, :default => File.expand_path('.')
         opt :config_map, "The global retrospec config file", :type => :string, :required => false, :default => File.expand_path(File.join(ENV['HOME'], '.retrospec', 'config.yaml' ))
@@ -30,8 +34,12 @@ Available subcommands:
         stop_on sub_commands
       end
       cmd = ARGV.shift # get the subcommand
+      # these variables are used in the module helpers to determine if we should overwrite files
+      ENV['RETROSPEC_OVERWRITE_ALL'] = global_opts[:enable_overwrite_all].to_s if global_opts[:enable_overwrite_all]
+      ENV['RETROSPEC_OVERWRITE'] = global_opts[:enable_overwrite].to_s if global_opts[:enable_overwrite]
+
       if plugin_class = cli.plugin_map[cmd]
-        # this is what generates the cli options for the subcommand
+        # this is what generates the cli options for the plugin
         # this is also the main entry point that runs the plugin's cli
         global_config = Retrospec::Config.config_data(global_opts[:config_map])
         plugin_name   = plugin_class.send(:plugin_name)
