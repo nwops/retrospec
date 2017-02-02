@@ -1,4 +1,4 @@
-require_relative 'version'
+require_relative 'retrospec/version'
 # monkey patch in some color effects string methods
 class String
   def red;            "\033[31m#{self}\033[0m" end
