@@ -14,7 +14,7 @@ describe 'config' do
 
   it 'returns the correct context' do
     context = Retrospec::Config.plugin_context(config_obj.config_data, 'puppet')
-    expect(context.keys.count).to eq(2)
+    expect(context.keys.count).to be >= 2
     expect(context['plugins::puppet::templates::ref']).to eq('master')
     expect(context).to be_a Hash
   end
