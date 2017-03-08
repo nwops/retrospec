@@ -29,3 +29,7 @@ Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each {|f| require f}
 RSpec.configure do |config|
 
 end
+
+def fixtures_dir
+  File.join(File.dirname(__FILE__), 'fixtures')
+end

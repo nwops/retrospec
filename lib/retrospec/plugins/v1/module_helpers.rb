@@ -83,9 +83,40 @@ module Retrospec
           end
         end
 
+        # @param [String] - destination of the file
+        # @return [Bool] - true if the file should be synced
+        # determines if the file should be synced by checking if the any of the file extensions
+        # have the word sync
+        def sync_file?(file)
+          filename = File.basename(file)
+          parts = filename.split('.')
+          parts.include?('sync')
+        end
+
+        # @param [String] - destination of the file
+        # @return [Bool] - true if the file should be synced
+        # determines if the contains the extension retrospec
+        # have the word sync
+        def retrospec_file?(file)
+          filename = File.basename(file)
+          parts = filename.split('.')
+          parts.include?('retrospec')
+        end
+
+        # @param [String] - destination of the file
+        # @param [Bool] - true if the file should be synced
+        # @return [Bool] - true if the file should be created or overwritten
+        def should_create?(dest, sync_file = false)
+          return true unless File.exists?(dest)
+          return true if sync_file
+          return true if overwrite?(dest)
+          return true if File.zero?(dest)
+          false
+        end
+
         # move the file, safely
         def safe_move_file(src,dest)
-          if File.exists?(dest) && !overwrite?(dest)
+          unless should_create?(dest)
             return $stderr.puts "!! #{dest} already exists and differs from template".warning
           end
           create_content(:mv, dest, src)
@@ -93,15 +124,15 @@ module Retrospec
 
         # copy the symlink and preserve the link
         def safe_create_symlink(src,dest)
-          if File.exists?(dest) && !overwrite?(dest)
+          unless should_create?(dest)
             return $stderr.puts "!! #{dest} already exists and differs from template".warning
           end
           create_content(:link, dest, src)
         end
 
         # safely copy an existing file to another dest
-        def safe_copy_file(src, dest)
-          if File.exists?(dest) and !File.zero?(dest) && !overwrite?(dest)
+        def safe_copy_file(src, dest, sync_file = false)
+          unless should_create?(dest, sync_file)
             return $stderr.puts "!! #{dest} already exists".warning
           end
           return safe_touch(src) unless File.exists?(src)
@@ -121,11 +152,11 @@ module Retrospec
         end
 
         # safely creates a file and does not override the existing file
-        def safe_create_file(dest, content)
-          if File.exists?(dest) && !overwrite?(dest)
+        def safe_create_file(dest, content, sync_file = false)
+          unless should_create?(dest, sync_file)
             old_content = File.read(dest)
             # if we did a better comparison of content we could be smarter about when we create files
-            if old_content != content or not File.zero?(dest)
+            if old_content != content
               $stderr.puts "!! #{dest} already exists and differs from template".warning
             end
           else
@@ -146,17 +177,15 @@ module Retrospec
         # path is the full path of the file to create
         # template is the full path to the template file
         # spec_object is any bindable object which the templates uses for context
-        def safe_create_template_file(path, template, spec_object)
+        def safe_create_template_file(path, template, spec_object, sync_file = false)
           # check to ensure parent directory exists
           file_dir_path = File.expand_path(File.dirname(path))
-          if ! File.exists?(file_dir_path)
-            safe_mkdir(file_dir_path)
-          end
+          safe_mkdir(file_dir_path) unless File.exists?(file_dir_path)
           File.open(template) do |file|
             renderer = ERB.new(file.read, 0, '-')
             content = renderer.result spec_object.get_binding
             dest_path = File.expand_path(path)
-            safe_create_file(dest_path, content)
+            safe_create_file(dest_path, content, sync_file)
           end
         end
 
@@ -176,12 +205,15 @@ module Retrospec
             else
               # because some plugins contain erb files themselves any erb file will be copied only
               # so we need to designate which files should be rendered with .retrospec.erb
-              if template =~ /\.retrospec\.erb/
-                # render any file ending in .retrospec_erb as a template
+              # render any file ending in .retrospec_erb as a template
+              sync_file = sync_file?(template)
+              retrospec_file = retrospec_file?(template)
+              dest = dest.gsub(/\.sync/, '') if sync_file
+              if retrospec_file
                 dest = dest.gsub(/\.retrospec\.erb/, '')
-                safe_create_template_file(dest, template, spec_object)
+                safe_create_template_file(dest, template, spec_object, sync_file)
               else
-                safe_copy_file(template, dest)
+                safe_copy_file(template, dest, sync_file)
               end
             end
           end
