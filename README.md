@@ -119,6 +119,10 @@ Some ideas I have in my head for future plugins that should be created.
 
 The sky is really the limit for what we can create since the usage is limited to any project that contains files. 
 
+## Special file extensions
+ * If a file contains `.sync` the file will be always be synced
+ * If a file contains `.retrospec.erb` this tells retrospec that the file should be rendered as an erb file
+ 
 ## Contributing to retrospec
  
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet.
