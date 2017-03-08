@@ -1,6 +1,15 @@
 require 'spec_helper'
 require 'retrospec/plugins/v1/plugin'
 
+class FakeContext < Retrospec::Plugins::V1::ContextObject
+  attr_reader :module_name
+
+  def initialize
+    @module_name = 'module_name'
+  end
+
+end
+
 describe Retrospec::Plugins::V1::ModuleHelpers do
 
   let(:helper_class) do
@@ -8,7 +17,7 @@ describe Retrospec::Plugins::V1::ModuleHelpers do
   end
 
   let(:context) do
-    Retrospec::Plugins::V1::ContextObject.new
+    c = FakeContext.new
   end
 
   it 'sync_file should be false' do
@@ -33,6 +42,18 @@ describe Retrospec::Plugins::V1::ModuleHelpers do
 
   it 'retrospec_file should be false with retrospec in name' do
     expect(helper_class.retrospec_file?('/tmp/modulesync_retrospec.erb')).to be false
+  end
+
+  describe 'filter files' do
+    before(:each) do
+      allow(helper_class).to receive(:create_content).and_return(true)
+    end
+
+    it 'can filter rake file' do
+      dir = File.join(fixtures_dir, 'puppet')
+      expect(helper_class).to_not receive(:safe_create_file).with('/tmp/module_name/acceptance/nodesets/default.yml', anything, true)
+      helper_class.safe_create_module_files(dir, '/tmp/module_name', context, %r{nodesets|acceptance|spec_helper_acceptance})
+    end
   end
 
   describe 'sync files' do
