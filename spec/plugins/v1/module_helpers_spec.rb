@@ -82,6 +82,11 @@ describe Retrospec::Plugins::V1::ModuleHelpers do
       expect(helper_class).to receive(:safe_create_file).with('/tmp/module_name/Rakefile', anything, true)
       helper_class.safe_create_module_files(File.join(fixtures_dir, 'sync_files'), '/tmp/module_name', context)
     end
+
+    it 'create directory files' do
+      expect(helper_class).to receive(:safe_create_file).with('/tmp/module_name/Rakefile', anything, true)
+      helper_class.safe_create_directory_files(File.join(fixtures_dir, 'sync_files', 'module_files'), '/tmp/module_name', context)
+    end
   end
 
 end

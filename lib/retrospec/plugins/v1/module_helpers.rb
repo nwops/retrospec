@@ -189,7 +189,7 @@ module Retrospec
           end
         end
 
-        # creates any file that is contained in the templates/modules_files directory structure
+        # creates any file that is contained in the templates_dir directory structure
         # loops through the directory looking for erb files or other files.
         # strips the erb extension and renders the template to the current module path
         # filenames must named how they would appear in the normal module path.  The directory
@@ -198,12 +198,11 @@ module Retrospec
         # @param [String] module_path - path to the module
         # @param [String] spec_object - the context that is used for template rendering
         # @param [String] filter - a regex string used to filter out files
-        def safe_create_module_files(template_dir, module_path, spec_object, filter = nil)
-          dir = File.join(template_dir,'module_files')
-          templates = Find.find(dir).sort
+        def safe_create_directory_files(template_dir, module_path, spec_object, filter = nil)
+          templates = Find.find(template_dir).sort
           templates.each do |template|
             next if template =~ filter
-            dest = template.gsub(File.join(template_dir,'module_files'), module_path)
+            dest = template.gsub(template_dir, module_path)
             if File.symlink?(template)
               safe_create_symlink(template, dest)
             elsif File.directory?(template)
@@ -223,6 +222,22 @@ module Retrospec
               end
             end
           end
+        end
+
+
+
+        # creates any file that is contained in the templates/modules_files directory structure
+        # loops through the directory looking for erb files or other files.
+        # strips the erb extension and renders the template to the current module path
+        # filenames must named how they would appear in the normal module path.  The directory
+        # structure where the file is contained
+        # @param [String] template directory of where to find templates
+        # @param [String] module_path - path to the module
+        # @param [String] spec_object - the context that is used for template rendering
+        # @param [String] filter - a regex string used to filter out files
+        def safe_create_module_files(template_dir, module_path, spec_object, filter = nil)
+          dir = File.join(template_dir,'module_files')
+          safe_create_directory_files(dir, module_path, spec_object, filter = nil)
         end
       end
     end
