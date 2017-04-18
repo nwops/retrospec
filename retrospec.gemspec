@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['corey@nwops.io']
 
   spec.summary = "A devops framework for automating your development workflow"
-  spec.date = "2017-02-01"
+  spec.date = "2017-04-17"
   spec.homepage = "http://github.com/nwops/retrospec"
   spec.description = "Retrospec is a framework that allows the automation of repetitive file creation with just about any kind of language through the use of a pluggable architecture."
   spec.license       = 'MIT'
