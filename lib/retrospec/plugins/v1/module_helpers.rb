@@ -237,7 +237,7 @@ module Retrospec
         # @param [String] filter - a regex string used to filter out files
         def safe_create_module_files(template_dir, module_path, spec_object, filter = nil)
           dir = File.join(template_dir,'module_files')
-          safe_create_directory_files(dir, module_path, spec_object, filter = nil)
+          safe_create_directory_files(dir, module_path, spec_object, filter)
         end
       end
     end

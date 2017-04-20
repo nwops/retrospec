@@ -1,4 +1,6 @@
 # Retrospec Changelog
+## 0.6.2
+ * Fixes a bug with safe_create_module_files not passing the filter
 ## 0.6.1
  * Adds ability to create files from any template directory 
 ## 0.6.0
