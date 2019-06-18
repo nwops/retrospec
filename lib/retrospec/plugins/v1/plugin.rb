@@ -1,4 +1,4 @@
-require 'trollop'
+require 'optimist'
 require_relative 'module_helpers'
 require_relative 'context_object'
 
