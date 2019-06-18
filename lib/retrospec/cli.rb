@@ -1,5 +1,5 @@
 require_relative 'plugins'
-require 'trollop'
+require 'optimist'
 require_relative '../retrospec'
 require_relative 'config'
 
@@ -13,7 +13,7 @@ module Retrospec
       sub_commands = cli.plugin_map.keys
       cmd_help = sub_commands.join("\n")
 
-      global_opts = Trollop::options do
+      global_opts = Optimist::options do
         version "#{Retrospec::VERSION} (c) Corey Osman"
         banner <<-EOS
 A framework to automate your development workflow by generating common files and test patterns.
@@ -52,7 +52,7 @@ Available subcommands:
           # this is the default action when no command is entered
           # at a later time we will try and use some magic to guess
           # what the user wants
-          Trollop.educate
+          Optimist.educate
         end
       end
     end
