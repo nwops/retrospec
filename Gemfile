@@ -3,7 +3,7 @@ gem 'optimist', '~> 3.0.0'
 
 group :development do
   gem "rspec", "~> 3.2"
-  gem "rdoc", "~> 3.12"
+  gem "rdoc", "~> 6.3"
   gem 'rake'
   gem "bundler", "~> 2.0"
   gem "simplecov", ">= 0"
